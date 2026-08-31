@@ -1,0 +1,279 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: caresync
+    description: CareSync prototype operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /caresync/dashboard:
+    get:
+      operationId: getCareSyncDashboard
+      tags: [caresync]
+      summary: Get the demo patient dashboard
+      responses:
+        "200":
+          description: Dashboard data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Dashboard"
+  /caresync/journey:
+    get:
+      operationId: getCareSyncJourney
+      tags: [caresync]
+      summary: Get the connected healthcare journey
+      responses:
+        "200":
+          description: Journey events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/JourneyEvent"
+  /caresync/doctors:
+    get:
+      operationId: listCareSyncDoctors
+      tags: [caresync]
+      summary: List verified demo doctors
+      responses:
+        "200":
+          description: Doctors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Doctor"
+  /caresync/access-requests:
+    get:
+      operationId: listAccessRequests
+      tags: [caresync]
+      summary: List consent requests
+      responses:
+        "200":
+          description: Access requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AccessRequest"
+  /caresync/access-requests/{id}/decision:
+    post:
+      operationId: decideAccessRequest
+      tags: [caresync]
+      summary: Allow or deny a consent request
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccessDecision"
+      responses:
+        "200":
+          description: Updated request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccessRequest"
+  /caresync/appointments:
+    get:
+      operationId: listCareSyncAppointments
+      tags: [caresync]
+      summary: List appointments
+      responses:
+        "200":
+          description: Appointments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Appointment"
+    post:
+      operationId: createCareSyncAppointment
+      tags: [caresync]
+      summary: Book a demo appointment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AppointmentInput"
+      responses:
+        "201":
+          description: Created appointment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+  /caresync/pharmacy-orders:
+    get:
+      operationId: listPharmacyOrders
+      tags: [caresync]
+      summary: List pharmacy orders
+      responses:
+        "200":
+          description: Pharmacy orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PharmacyOrder"
+  /caresync/ai-summary:
+    get:
+      operationId: getCareSyncAiSummary
+      tags: [caresync]
+      summary: Get an assistive summary of the demo journey
+      responses:
+        "200":
+          description: AI-assisted summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AiSummary"
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    Patient:
+      type: object
+      required: [id, name, patientId, initials, idStatus]
+      properties:
+        id: { type: number }
+        name: { type: string }
+        patientId: { type: string }
+        initials: { type: string }
+        idStatus: { type: string }
+    Dashboard:
+      type: object
+      required: [patient, currentStage, nextAppointment, pendingTests, activeMedications, unreadNotifications]
+      properties:
+        patient: { $ref: "#/components/schemas/Patient" }
+        currentStage: { type: string }
+        nextAppointment: { $ref: "#/components/schemas/Appointment" }
+        pendingTests: { type: number }
+        activeMedications: { type: number }
+        unreadNotifications: { type: number }
+    JourneyEvent:
+      type: object
+      required: [id, title, type, status, date, provider, organization, description]
+      properties:
+        id: { type: number }
+        title: { type: string }
+        type: { type: string }
+        status: { type: string }
+        date: { type: string }
+        provider: { type: string }
+        organization: { type: string }
+        description: { type: string }
+        accent: { type: string }
+    Doctor:
+      type: object
+      required: [id, name, specialization, organization, location, experience, rating, fee, verified, nextSlot]
+      properties:
+        id: { type: number }
+        name: { type: string }
+        specialization: { type: string }
+        organization: { type: string }
+        location: { type: string }
+        experience: { type: string }
+        rating: { type: number }
+        fee: { type: number }
+        verified: { type: boolean }
+        nextSlot: { type: string }
+        initials: { type: string }
+    AccessRequest:
+      type: object
+      required: [id, doctorName, specialization, organization, purpose, requestedAt, status, dataScopes]
+      properties:
+        id: { type: number }
+        doctorName: { type: string }
+        specialization: { type: string }
+        organization: { type: string }
+        purpose: { type: string }
+        requestedAt: { type: string }
+        status: { type: string }
+        dataScopes:
+          type: array
+          items: { type: string }
+    AccessDecision:
+      type: object
+      required: [decision]
+      properties:
+        decision:
+          type: string
+          enum: [ALLOW, DENY]
+    Appointment:
+      type: object
+      required: [id, doctorName, specialization, date, time, mode, status, fee]
+      properties:
+        id: { type: number }
+        doctorName: { type: string }
+        specialization: { type: string }
+        date: { type: string }
+        time: { type: string }
+        mode: { type: string }
+        status: { type: string }
+        fee: { type: number }
+    AppointmentInput:
+      type: object
+      required: [doctorId, date, time, mode]
+      properties:
+        doctorId: { type: number }
+        date: { type: string }
+        time: { type: string }
+        mode: { type: string }
+    PharmacyOrder:
+      type: object
+      required: [id, pharmacy, itemCount, amount, status, updatedAt]
+      properties:
+        id: { type: string }
+        pharmacy: { type: string }
+        itemCount: { type: number }
+        amount: { type: number }
+        status: { type: string }
+        updatedAt: { type: string }
+    AiSummary:
+      type: object
+      required: [headline, body, nextStep, disclaimer]
+      properties:
+        headline: { type: string }
+        body: { type: string }
+        nextStep: { type: string }
+        disclaimer: { type: string }
+

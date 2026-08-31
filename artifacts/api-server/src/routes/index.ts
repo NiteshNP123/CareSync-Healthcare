@@ -1,0 +1,40 @@
+import { Router, type IRouter } from "express";
+import healthRouter from "./health";
+import caresyncRouter from "./caresync";
+import authRouter from "./auth";
+import patientsRouter from "./patients";
+import doctorsRouter from "./doctors";
+import appointmentsRouter from "./appointments";
+import consultationsRouter from "./consultations";
+import prescriptionsRouter from "./prescriptions";
+import investigationsRouter from "./investigations";
+import labRouter from "./lab";
+import pharmacyRouter from "./pharmacy";
+import consentRouter from "./consent";
+import paymentsRouter from "./payments";
+import journeyRouter from "./journey";
+import aiRouter from "./ai";
+import notificationsRouter from "./notifications";
+import auditRouter from "./audit";
+
+const router: IRouter = Router();
+
+router.use(healthRouter);
+router.use(authRouter);
+router.use(patientsRouter);
+router.use(doctorsRouter);
+router.use(appointmentsRouter);
+router.use(consultationsRouter);
+router.use(prescriptionsRouter);
+router.use(investigationsRouter);
+router.use(labRouter);
+router.use(pharmacyRouter);
+router.use(consentRouter);
+router.use(paymentsRouter);
+router.use(journeyRouter);
+router.use(aiRouter);
+router.use(notificationsRouter);
+router.use(auditRouter);
+router.use(caresyncRouter);
+
+export default router;

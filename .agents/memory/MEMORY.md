@@ -1,0 +1,1 @@
+- [CareSync prototype positioning](caresync-positioning.md) — keep the product visibly independent and treat identity, AI, OTP, payments, and integrations as demo scope until authorized services exist.

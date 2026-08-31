@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "CareSync"
+description = "An independent healthcare coordination prototype that helps patients, doctors, labs, pharmacies, caregivers, and administrators keep one continuous healthcare journey organized with consent-based access and AI-assisted summaries."
+version = "1.0.0"
+id = "artifacts/caresync"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22718
+
+[services.development]
+run = "pnpm --filter @workspace/caresync run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/caresync", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/caresync/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22718"
+BASE_PATH = "/"

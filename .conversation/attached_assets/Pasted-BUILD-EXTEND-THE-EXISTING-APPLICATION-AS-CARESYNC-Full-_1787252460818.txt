@@ -1,0 +1,1259 @@
+BUILD / EXTEND THE EXISTING APPLICATION AS:
+
+CARESYNC
+
+Full name:
+“CareSync – AI-Assisted Healthcare Journey and Care Coordination Platform”
+
+Tagline:
+“Your healthcare journey should never start from zero.”
+
+============================================================
+IMPORTANT PRODUCT POSITIONING
+============================================================
+
+CareSync is an INDEPENDENT healthcare software prototype.
+
+It is NOT:
+
+- a Government of India application
+- an official ABDM application
+- an official ABHA application
+- an Aadhaar application
+- an official eSanjeevani application
+- a replacement for ABDM
+- a replacement for ABHA
+- a government service
+- affiliated with or endorsed by the Government of India unless an actual authorized integration is later established
+
+Do NOT use:
+
+- Government of India logo
+- National Emblem
+- ABDM logo
+- ABHA logo
+- eSanjeevani logo
+- government seals
+- government-style branding
+- wording such as “official”, “government approved”, “Government of India healthcare app”, or similar
+
+Do NOT copy the visual identity of ABHA, ABDM or eSanjeevani.
+
+Display a small footer/disclaimer on the public website:
+
+“CareSync is an independent healthcare software prototype and is not affiliated with or endorsed by the Government of India, ABDM, ABHA or eSanjeevani.”
+
+The disclaimer should be visible but should NOT dominate the interface.
+
+============================================================
+CORE PURPOSE
+============================================================
+
+CareSync is designed to coordinate a patient's healthcare journey across:
+
+PATIENTS
+DOCTORS
+LABORATORIES
+PHARMACIES
+CAREGIVERS
+HEALTHCARE ORGANIZATIONS
+
+The central concept is:
+
+ONE PATIENT
++
+ONE CONTINUOUS HEALTHCARE JOURNEY
++
+AUTHORIZED HEALTHCARE PARTICIPANTS
++
+AI-ASSISTED INFORMATION MANAGEMENT
+
+The platform connects:
+
+Consultations
+Prescriptions
+Diagnostic tests
+Laboratory reports
+Medications
+Referrals
+Appointments
+Follow-ups
+Pharmacy orders
+Payments
+Caregiver activities
+
+into one continuous patient journey.
+
+The main product question is:
+
+“What happened?”
+“What is happening now?”
+“What needs to happen next?”
+
+============================================================
+DESIGN PRINCIPLE
+============================================================
+
+CareSync should be designed as a CARE-COORDINATION AND INFORMATION-MANAGEMENT LAYER.
+
+Do not market it as a diagnostic AI.
+
+Do not claim it is superior to government infrastructure.
+
+Do not claim it is the first platform of its kind.
+
+Do not claim it is officially integrated with ABHA/ABDM unless a real authorized API integration exists.
+
+============================================================
+USER ROLES
+============================================================
+
+Create six roles:
+
+1. PATIENT
+2. DOCTOR
+3. LABORATORY STAFF
+4. PHARMACY STAFF
+5. CAREGIVER
+6. ADMINISTRATOR
+
+Each role has a separate dashboard and permission model.
+
+============================================================
+PATIENT ACCOUNT
+============================================================
+
+Patient registration should include:
+
+- Full name
+- Date of birth
+- Gender
+- Phone
+- Email
+- Emergency contact
+- Government-ID verification status
+- Profile information
+
+Generate a unique:
+
+CareSync Patient ID
+
+Example:
+
+CS-2048-7392
+
+Also generate a QR representation.
+
+IMPORTANT PRIVACY REQUIREMENT:
+
+Do NOT store raw Aadhaar numbers or other government-ID numbers unnecessarily.
+
+For this prototype, create a MOCK/DEMO identity-verification mechanism.
+
+Represent the identity as:
+
+Government ID verification:
+VERIFIED
+
+Do not claim actual Aadhaar or government verification unless a real authorized service is connected.
+
+============================================================
+DOCTOR REGISTRATION
+============================================================
+
+Doctors must undergo verification before obtaining verified-doctor privileges.
+
+Collect:
+
+- Name
+- Specialization
+- Qualification
+- Medical registration/license number
+- Experience
+- Hospital/clinic
+- Government ID verification status
+- Professional documentation
+- Contact information
+
+Doctor statuses:
+
+PENDING
+UNDER REVIEW
+VERIFIED
+REJECTED
+SUSPENDED
+
+Admin reviews documentation.
+
+Only VERIFIED doctors can perform clinical workflows.
+
+Display:
+
+✓ Verified Doctor
+
+============================================================
+LABORATORY ORGANIZATION
+============================================================
+
+Laboratories are organizations, not individual users.
+
+Example:
+
+ABC Diagnostics
+
+Staff can include:
+
+- Lab Administrator
+- Lab Technician
+- Reporting Staff
+
+Lab registration:
+
+- Name
+- Branch
+- Address
+- Contact
+- License/accreditation information
+- Verification status
+
+Admin verifies laboratories.
+
+============================================================
+LABORATORY WORKFLOW
+============================================================
+
+Doctor orders a laboratory test.
+
+↓
+
+Patient visits laboratory.
+
+↓
+
+Lab staff searches using CareSync Patient ID or test request ID.
+
+↓
+
+Lab verifies patient/request.
+
+↓
+
+Test is performed.
+
+↓
+
+Lab staff uploads report.
+
+↓
+
+Report is linked to the patient.
+
+↓
+
+Report is linked to the relevant healthcare journey event.
+
+↓
+
+Patient receives notification.
+
+↓
+
+Authorized doctor can access the report.
+
+Laboratory staff must NOT be able to:
+
+- change diagnosis
+- prescribe medicine
+- change treatment
+- modify doctor consultation notes
+
+Lab staff only manage laboratory-related information.
+
+============================================================
+LAB REPORT MANAGEMENT
+============================================================
+
+Support multiple report types.
+
+Examples:
+
+CBC
+Blood Glucose
+HbA1c
+LFT
+KFT
+Lipid Profile
+Urine Analysis
+Hormone Tests
+Pathology
+Microbiology
+Imaging-related reports
+Custom laboratory reports
+
+Allow:
+
+PDF upload
+Image upload
+Structured values
+Reference ranges
+Report verification
+Date
+Ordering doctor
+Laboratory
+Patient
+
+============================================================
+DOCTOR ACCESS TO PATIENT INFORMATION
+============================================================
+
+DOCTORS MUST NOT automatically access all patient records simply because they know the CareSync ID.
+
+Implement consent-based access.
+
+Workflow:
+
+Doctor enters CareSync Patient ID
+
+↓
+
+System finds patient
+
+↓
+
+Doctor clicks:
+
+“Request Access”
+
+↓
+
+Patient receives consent request
+
+↓
+
+Patient sees:
+
+Doctor name
+Specialization
+Hospital/clinic
+Purpose
+Requested data
+
+Patient can:
+
+ALLOW
+DENY
+SELECT SPECIFIC INFORMATION
+
+Possible permissions:
+
+Consultations
+Prescriptions
+Laboratory reports
+Imaging
+Medications
+Appointments
+Referrals
+Healthcare journey
+
+Only after approval should the doctor receive the requested information.
+
+============================================================
+OTP / CONFIRMATION
+============================================================
+
+When the doctor requests access, send an OTP/confirmation mechanism to the patient's registered contact.
+
+For the prototype, use a DEMO OTP system.
+
+Do not send real SMS unless a secure messaging service is intentionally configured.
+
+Display:
+
+“Demo OTP”
+
+in development mode only.
+
+In production architecture, use a secure OTP provider.
+
+============================================================
+PATIENT DASHBOARD
+============================================================
+
+Create:
+
+Dashboard
+My Healthcare Journey
+Medical Reports
+Consultations
+Prescriptions
+Medications
+Appointments
+Laboratory
+Pharmacy
+Payments
+Care Team
+Consent & Access
+Notifications
+Profile
+
+Dashboard should show:
+
+Current care stage
+Upcoming appointment
+Pending tests
+Latest reports
+Current medications
+Pending follow-ups
+AI summary
+Recent healthcare events
+Pharmacy orders
+Payment status
+
+============================================================
+HEALTHCARE JOURNEY
+============================================================
+
+This is the core feature.
+
+Create a beautiful interactive timeline:
+
+Symptoms
+↓
+Consultation
+↓
+Tests
+↓
+Laboratory
+↓
+Reports
+↓
+Treatment
+↓
+Medication
+↓
+Follow-up
+↓
+Referral
+↓
+Specialist
+↓
+Recovery / Monitoring
+
+Each event stores:
+
+Date
+Time
+Provider
+Organization
+Event type
+Status
+Notes
+Linked documents
+
+Statuses:
+
+Completed
+In Progress
+Pending
+Overdue
+Cancelled
+
+============================================================
+DOCTOR DASHBOARD
+============================================================
+
+Create:
+
+Dashboard
+Patients
+Patient Access Requests
+Appointments
+Doctor-to-Doctor Appointments
+Consultations
+Prescriptions
+Tests
+Laboratory Reports
+Referrals
+Follow-ups
+Availability
+Payments
+Notifications
+Profile
+
+Display:
+
+Today's appointments
+Upcoming appointments
+Pending patient requests
+Recent reports
+Pending follow-ups
+Patients requiring review
+
+============================================================
+DOCTOR CONSULTATION
+============================================================
+
+Doctor can create consultation:
+
+Symptoms
+Clinical observations
+Assessment/diagnosis recorded by doctor
+Prescription
+Medication
+Investigations
+Referral
+Follow-up
+Clinical notes
+
+After saving:
+
+Automatically create a healthcare journey event.
+
+============================================================
+PATIENT APPOINTMENTS
+============================================================
+
+Patients should be able to:
+
+Search doctors
+Filter by specialization
+Filter by location
+Filter by availability
+View doctor profiles
+View ratings/reviews
+View consultation fee
+View available dates
+View available time slots
+
+Booking:
+
+Select doctor
+↓
+Select available date
+↓
+Select time slot
+↓
+Review appointment
+↓
+Payment request
+↓
+Payment
+↓
+Appointment confirmed
+
+Prevent double booking.
+
+============================================================
+DOCTOR AVAILABILITY
+============================================================
+
+Doctors can define:
+
+Working days
+Working hours
+Breaks
+Consultation duration
+Teleconsultation slots
+In-person slots
+Leave days
+
+The system dynamically generates available slots.
+
+============================================================
+DOCTOR-TO-DOCTOR APPOINTMENTS
+============================================================
+
+IMPORTANT FEATURE.
+
+Doctors are also healthcare users.
+
+A doctor may need to consult another specialist.
+
+Verified doctors should be able to:
+
+Search doctors
+Filter specialization
+View verified profile
+View availability
+Book appointment
+Select consultation mode
+Make payment if applicable
+Manage appointment
+
+Example:
+
+General Physician
+↓
+Search Cardiologist
+↓
+Select Cardiologist
+↓
+Choose slot
+↓
+Book appointment
+↓
+Payment
+↓
+Consultation
+
+Clearly distinguish:
+
+PATIENT → DOCTOR
+
+and
+
+DOCTOR → DOCTOR
+
+appointments.
+
+============================================================
+PHARMACY ORGANIZATION
+============================================================
+
+Pharmacies are organizations.
+
+Example:
+
+XYZ Pharmacy
+
+Organization can contain:
+
+Pharmacy Administrator
+Pharmacist
+Pharmacy Staff
+
+Pharmacy registration:
+
+Name
+License information
+Address
+Branch
+Contact
+Operating hours
+Verification status
+
+Admin reviews verification.
+
+============================================================
+PHARMACY DASHBOARD
+============================================================
+
+Pharmacy users can:
+
+View incoming prescription/order
+Verify prescription information
+Check stock availability
+Create bill
+Send payment request
+Process order
+Update status
+Upload invoice
+Mark order ready
+Mark dispatched
+Mark delivered
+
+Order status:
+
+Prescription Received
+Order Placed
+Payment Pending
+Paid
+Preparing
+Ready
+Dispatched
+Delivered
+Cancelled
+Refunded
+
+============================================================
+PHARMACY ORDER FLOW
+============================================================
+
+Doctor creates prescription.
+
+↓
+
+Patient views prescription.
+
+↓
+
+Patient selects verified pharmacy.
+
+↓
+
+Patient places pharmacy order.
+
+↓
+
+Pharmacy reviews order and availability.
+
+↓
+
+Pharmacy generates bill.
+
+↓
+
+Payment request is sent to patient.
+
+↓
+
+Patient pays.
+
+↓
+
+Pharmacy processes order.
+
+↓
+
+Order is dispatched.
+
+↓
+
+Patient receives order.
+
+============================================================
+PAYMENTS
+============================================================
+
+Support demo/sandbox payments only.
+
+Payments may be used for:
+
+Doctor appointment
+Doctor-to-doctor consultation
+Laboratory test
+Pharmacy order
+
+Payment flow:
+
+Service selected
+↓
+Bill generated
+↓
+Payment request sent
+↓
+Patient reviews
+↓
+Patient pays
+↓
+Payment verified
+↓
+Invoice/receipt generated
+
+Statuses:
+
+Pending
+Processing
+Paid
+Failed
+Refunded
+Cancelled
+
+Do NOT store real card numbers.
+
+Do NOT store CVV.
+
+Do NOT implement real payment collection in the prototype unless a compliant payment gateway is explicitly configured.
+
+============================================================
+PAYMENT REQUEST / MANDATE
+============================================================
+
+When a pharmacy order or appointment requires payment:
+
+Send a payment request.
+
+Example:
+
+“Payment Required”
+
+XYZ Pharmacy
+Order #PS-2048
+
+Amount:
+₹850
+
+Items:
+5 medicines
+
+Buttons:
+
+Pay Now
+View Bill
+Cancel
+
+For the prototype use simulated payments.
+
+Do not automatically withdraw money from users.
+
+Require explicit user confirmation.
+
+============================================================
+CAREGIVER
+============================================================
+
+Caregiver can access patients only after authorization.
+
+Patient can:
+
+Invite caregiver
+Grant permissions
+Revoke permissions
+
+Caregiver can view permitted:
+
+Appointments
+Tasks
+Follow-ups
+Relevant medications
+Journey progress
+Notifications
+
+============================================================
+AI FEATURES
+============================================================
+
+Use AI only as an assistive information layer.
+
+AI may:
+
+Summarize medical history
+Summarize uploaded reports
+Explain terminology
+Organize documents
+Help search authorized records
+Summarize consultations
+Assist with timeline organization
+Identify recorded pending follow-ups
+
+AI MUST NOT:
+
+Diagnose independently
+Prescribe medication
+Change medication
+Tell the patient to stop treatment
+Claim certainty about medical conditions
+Replace a doctor
+
+Every AI-generated output should contain:
+
+“AI-generated information may contain errors. Verify important information against the original record and consult a qualified healthcare professional.”
+
+============================================================
+SECURITY AND PRIVACY
+============================================================
+
+Implement:
+
+Authentication
+Role-based authorization
+Consent-based patient access
+Organization-based permissions
+Secure file access
+Audit logs
+Access history
+Session management
+Input validation
+Protected routes
+
+Do not expose medical records through public URLs.
+
+Do not expose government-ID numbers.
+
+Do not log sensitive health information unnecessarily.
+
+============================================================
+AUDIT LOG
+============================================================
+
+Log:
+
+Doctor access
+Patient consent
+Consent denied
+Lab report upload
+Prescription created
+Pharmacy order
+Payment
+Appointment
+Caregiver access
+Emergency access
+Document viewing
+
+Each log:
+
+User
+Role
+Action
+Patient
+Organization
+Timestamp
+Result
+
+============================================================
+ADMINISTRATOR
+============================================================
+
+Admin manages:
+
+Users
+Doctors
+Laboratories
+Pharmacies
+Organizations
+Verification
+Appointments
+Payments
+System activity
+Audit logs
+
+Admin can:
+
+Approve
+Reject
+Suspend
+Reactivate
+Request documentation
+
+Do not give admin unrestricted clinical access by default.
+
+============================================================
+EMERGENCY ACCESS
+============================================================
+
+Create an optional emergency-access prototype.
+
+Doctor must provide:
+
+Reason
+Patient
+Required information
+
+Access should be:
+
+Time-limited where possible
+Logged
+Audited
+Patient-notified afterward
+
+Do not create unrestricted emergency access.
+
+============================================================
+DOCTOR DISCOVERY
+============================================================
+
+Doctor cards:
+
+Name
+Verification badge
+Specialization
+Experience
+Hospital
+Location
+Rating
+Reviews
+Fee
+Available slots
+
+Use fictional demo data.
+
+============================================================
+LANDING PAGE
+============================================================
+
+Hero:
+
+“Your healthcare journey should never start from zero.”
+
+Subtitle:
+
+“CareSync connects patients, doctors, laboratories, pharmacies and caregivers through one continuous healthcare journey, with AI-assisted tools that help organize and explain healthcare information.”
+
+Sections:
+
+The Problem
+How CareSync Works
+Healthcare Journey
+Patients
+Doctors
+Laboratories
+Pharmacies
+Caregivers
+AI Assistance
+Privacy
+Future Scope
+
+Do not use government branding.
+
+============================================================
+LEGAL / BRANDING SAFETY
+============================================================
+
+Add footer text:
+
+“CareSync is an independent healthcare software prototype. It is not affiliated with, endorsed by, or operated by the Government of India, ABDM, ABHA, eSanjeevani, or any government authority.”
+
+Also add:
+
+“Features shown are prototype functionality and may require additional regulatory, security, privacy, clinical and payment compliance before real-world deployment.”
+
+Do NOT claim:
+
+Government approval
+Government partnership
+ABHA integration
+Aadhaar verification
+Official medical certification
+Clinical validation
+Regulatory approval
+
+unless these are actually obtained and implemented.
+
+============================================================
+FUTURE INTEGRATIONS
+============================================================
+
+Label clearly as:
+
+FUTURE SCOPE
+
+Potential future integrations:
+
+ABHA / ABDM
+Verified healthcare registries
+Hospital APIs
+Laboratory APIs
+Pharmacy APIs
+Telemedicine
+Wearable devices
+Remote monitoring
+Multilingual AI
+Voice interface
+
+Do not implement these as fake “official” integrations.
+
+If displaying a future integration, label:
+
+“Planned integration”
+
+rather than:
+
+“Connected to ABHA”
+
+============================================================
+DATABASE
+============================================================
+
+Create proper entities:
+
+Users
+Patients
+Doctors
+Laboratories
+LabPersonnel
+Pharmacies
+PharmacyPersonnel
+Caregivers
+Organizations
+Appointments
+DoctorAvailability
+Consultations
+Prescriptions
+Medications
+Investigations
+LabReports
+MedicalDocuments
+Referrals
+FollowUps
+JourneyEvents
+AccessRequests
+ConsentRecords
+CaregiverPermissions
+PharmacyOrders
+OrderItems
+Invoices
+Payments
+PaymentRequests
+Notifications
+Reviews
+AuditLogs
+
+Ensure relationships are real and functional.
+
+============================================================
+DEMO DATA
+============================================================
+
+Use fictional demo data only.
+
+Example patient:
+
+Rahul Sharma
+
+CareSync ID:
+
+CS-2048-7392
+
+Create demo:
+
+Patients
+Doctors
+Laboratories
+Pharmacies
+Consultations
+Reports
+Prescriptions
+Appointments
+Orders
+Payments
+Journey events
+
+============================================================
+COMPLETE DEMO JOURNEY
+============================================================
+
+The application should support this demonstration:
+
+Patient registers
+↓
+CareSync ID generated
+↓
+Patient searches verified doctor
+↓
+Patient chooses available slot
+↓
+Payment request
+↓
+Patient pays
+↓
+Appointment confirmed
+↓
+Doctor consults patient
+↓
+Doctor orders blood test
+↓
+Patient visits laboratory
+↓
+Lab searches patient/test request
+↓
+Lab performs test
+↓
+Lab uploads verified report
+↓
+Patient receives notification
+↓
+Authorized doctor accesses report
+↓
+AI summarizes information
+↓
+Doctor prescribes medication
+↓
+Patient selects pharmacy
+↓
+Pharmacy receives prescription/order
+↓
+Pharmacy checks availability
+↓
+Pharmacy generates bill
+↓
+Patient receives payment request
+↓
+Patient pays
+↓
+Pharmacy processes order
+↓
+Follow-up created
+↓
+Patient does not improve
+↓
+Patient or doctor searches specialist
+↓
+Specialist appointment booked
+↓
+Doctor-to-doctor appointment can also be booked
+↓
+Patient provides consent for access
+↓
+Specialist sees authorized previous history
+↓
+AI provides summary
+↓
+New consultation added
+↓
+Healthcare journey continues
+
+============================================================
+IMPORTANT IMPLEMENTATION RULE
+============================================================
+
+Do not build disconnected mock pages.
+
+All major modules must share the same underlying patient, user, appointment, consent, healthcare journey, payment and organization data model.
+
+If a doctor uploads a consultation:
+
+The patient journey must update.
+
+If a lab uploads a report:
+
+The patient journey and relevant doctor's view must update.
+
+If a pharmacy processes an order:
+
+The patient pharmacy/order history must update.
+
+If a patient grants consent:
+
+The doctor should gain access according to the granted scope.
+
+If consent is revoked:
+
+The doctor should lose access where applicable.
+
+If an appointment is booked:
+
+It must appear in both relevant dashboards.
+
+============================================================
+FINAL UX GOAL
+============================================================
+
+The product should feel like:
+
+ONE CONNECTED HEALTHCARE ECOSYSTEM
+
+not:
+
+- a hospital website
+- an appointment-only app
+- an AI chatbot
+- a government clone
+- a simple medical-record CRUD application
+
+The central product idea is:
+
+PATIENT
+↓
+HEALTHCARE JOURNEY
+↓
+DOCTOR
+↓
+LAB
+↓
+REPORT
+↓
+PHARMACY
+↓
+FOLLOW-UP
+↓
+SPECIALIST
+↓
+CONTINUED CARE
+
+with AI helping users understand and organize the journey.
+
+Final product message:
+
+“CareSync makes healthcare information follow the patient — not the other way around.”
+
+Build the prototype with strong privacy-by-design, clear independent branding, role-based access, consent management, and clear separation between prototype functionality and future regulated integrations.

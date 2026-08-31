@@ -1,11 +1,180 @@
 import { Router, type IRouter } from "express";
 import { store } from "../lib/store";
-import { requireAuth, verifyPatientAccess } from "../middlewares/auth";
+import { requireAuth, requireRole, verifyPatientAccess } from "../middlewares/auth";
+import { resolveIntent } from "../services/ai/intentResolver";
+import { buildScopedContext } from "../services/ai/contextEngine";
+import { AssistantProviderFactory } from "../services/ai/providerFactory";
+import { AssistantSafetyLayer } from "../services/ai/safetyLayer";
 
 const router: IRouter = Router();
 
 export const AI_DISCLAIMER =
   "CareSync AI provides software-assisted healthcare information management and does not replace professional medical diagnosis or treatment. Always verify all information against original clinical records and consult your physician.";
+
+// ============================================================================
+// PATIENT-FACING CARESYNC ASSISTANT CHAT ENDPOINT (SECURITY HARDENED)
+// ============================================================================
+router.post("/ai/assistant/chat", async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    const hasAuthAttempt = (authHeader && authHeader.startsWith("Bearer ")) || (req.cookies && req.cookies.auth_token);
+
+    // 1. Explicit invalid/malformed token check -> 401
+    if (hasAuthAttempt && !req.user) {
+      store.logAudit({
+        actorRole: "UNAUTHENTICATED",
+        action: "AI_ASSISTANT_AUTH_FAILURE",
+        entityType: "API_ENDPOINT",
+        result: "DENIED",
+        metadata: { path: req.path, reason: "INVALID_OR_EXPIRED_TOKEN" },
+      });
+      res.status(401).json({ error: "Authentication required", message: "Invalid or expired session token." });
+      return;
+    }
+
+    // 2. Explicit Gating for Demo Fallback: Enabled ONLY when NODE_ENV === "development" AND DEMO_MODE === "true"
+    const isDemoFallbackAllowed =
+      process.env.NODE_ENV === "development" && process.env.DEMO_MODE === "true";
+
+    // 3. Unauthenticated request handling (Production or non-demo -> 401, Explicit demo mode -> strictly locked demo patient)
+    if (!req.user) {
+      if (!isDemoFallbackAllowed) {
+        store.logAudit({
+          actorRole: "UNAUTHENTICATED",
+          action: "AI_ASSISTANT_UNAUTHENTICATED_ACCESS_DENIED",
+          entityType: "API_ENDPOINT",
+          result: "DENIED",
+          metadata: {
+            path: req.path,
+            environment: process.env.NODE_ENV || "development",
+            demoMode: process.env.DEMO_MODE || "missing",
+          },
+        });
+        res.status(401).json({
+          error: "Authentication required",
+          message: "Please sign in to access CareSync Assistant.",
+        });
+        return;
+      }
+    }
+
+    // 4. Role Enforcement: Only PATIENT role is permitted
+    if (req.user && req.user.role !== "PATIENT") {
+      store.logAudit({
+        actorId: req.user.userId,
+        actorRole: req.user.role,
+        action: "UNAUTHORIZED_ROLE_ACCESS_ATTEMPT",
+        entityType: "API_ENDPOINT",
+        result: "DENIED",
+        metadata: { path: req.path, requiredRoles: ["PATIENT"], actorRole: req.user.role },
+      });
+      res.status(403).json({ error: "Forbidden", message: "CareSync Assistant is only accessible by patients." });
+      return;
+    }
+
+    const { message, conversationId, activeRoute, sessionHistory } = req.body;
+
+    // 5. Input Validation
+    if (!message || typeof message !== "string" || message.trim().length === 0) {
+      res.status(400).json({ error: "Message string is required and cannot be empty." });
+      return;
+    }
+
+    if (message.length > 500) {
+      res.status(400).json({ error: "Message exceeds maximum allowed length (500 characters)." });
+      return;
+    }
+
+    // 6. Identity Isolation: Server-derived patient ID (NEVER client-supplied)
+    let patientId: number;
+    let isDemoAccess = false;
+
+    if (req.user) {
+      const patient = store.patients.find((p) => p.userId === req.user!.userId);
+      if (!patient) {
+        res.status(403).json({ error: "Forbidden", message: "Authenticated user is not registered as a patient." });
+        return;
+      }
+      patientId = patient.id; // Strictly server-derived from verified user
+    } else {
+      // In gated demo mode, locked strictly to designated demo patient (Rahul Sharma, patientId: 1)
+      patientId = 1;
+      isDemoAccess = true;
+    }
+
+    // 7. Intent Resolution
+    const intent = resolveIntent(message);
+
+    // 8. Scoped Context Assembly (using isolated patientId)
+    const scopedContext = buildScopedContext(patientId, intent, activeRoute);
+
+    // 9. Provider Execution (Resolved via Provider Factory: Deterministic vs Gemini)
+    const provider = AssistantProviderFactory.getProvider();
+    const rawResponse = await provider.generateResponse(
+      message.trim(),
+      scopedContext,
+      intent,
+      Array.isArray(sessionHistory) ? sessionHistory : []
+    );
+
+    // 10. Safety Layer Sanitization & Validation
+    const sanitizedResponse = AssistantSafetyLayer.validateAndSanitize(rawResponse, scopedContext);
+
+    // 11. Immutable Cryptographic Audit Log with clear demo identification & provider info
+    store.logAudit({
+      actorId: req.user ? req.user.userId : 1,
+      actorRole: req.user ? req.user.role : "PATIENT",
+      action: isDemoAccess ? "AI_PATIENT_ASSISTANT_DEMO_QUERY" : "AI_PATIENT_ASSISTANT_QUERY",
+      entityType: "AI_ASSISTANT",
+      patientId,
+      result: "SUCCESS",
+      metadata: {
+        isDemoAccess,
+        environment: process.env.NODE_ENV || "development",
+        intent,
+        provider: sanitizedResponse.provider || provider.name,
+        fallbackReason: sanitizedResponse.fallbackReason,
+        conversationId: conversationId || "session-default",
+        sourcesCount: sanitizedResponse.sources.length,
+      },
+    });
+
+    res.json(sanitizedResponse);
+  } catch (error) {
+    console.error("CareSync Assistant Processing Error:", error);
+    res.status(500).json({
+      error: "Assistant processing error",
+      message: "Assistant temporarily unavailable. Your CareSync records are still available.",
+      disclaimer: AI_DISCLAIMER,
+    });
+  }
+});
+
+// ============================================================================
+// QUICK ACTION SUGGESTIONS FOR PATIENT ASSISTANT
+// ============================================================================
+router.get("/ai/assistant/quick-actions", (req, res) => {
+  const isDemoFallbackAllowed =
+    process.env.NODE_ENV === "development" && process.env.DEMO_MODE === "true";
+
+  if (!req.user && !isDemoFallbackAllowed) {
+    res.status(401).json({ error: "Authentication required" });
+    return;
+  }
+
+  if (req.user && req.user.role !== "PATIENT") {
+    res.status(403).json({ error: "Forbidden" });
+    return;
+  }
+
+  res.json([
+    { label: "Summarize my recent care", prompt: "Summarize my recent care journey and consultations." },
+    { label: "What's next?", prompt: "What is my next appointment and what pending tasks do I have?" },
+    { label: "Explain my latest report", prompt: "Explain my latest HbA1c and lipid panel report." },
+    { label: "My active medications", prompt: "What medications are currently prescribed in my records?" },
+    { label: "Find a doctor", prompt: "Help me find a doctor or specialist in the CareSync network." },
+  ]);
+});
 
 // ============================================================================
 // DYNAMIC AI JOURNEY SUMMARY

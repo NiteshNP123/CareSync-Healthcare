@@ -32,7 +32,7 @@ router.get("/caresync/dashboard", (_req, res) => {
         id: patient.id,
         name: user?.fullName || "Rahul Sharma",
         patientId: patient.careSyncId,
-        initials: user?.fullName ? user.fullName.split(" ").map((w) => w[0]).join("").slice(0, 2) : "RS",
+        initials: user?.fullName ? user.fullName.split(" ").map((w: string) => w[0]).join("").slice(0, 2) : "RS",
         idStatus: patient.idStatus,
       },
       currentStage: "Monitoring & Specialist Review",
@@ -261,14 +261,16 @@ router.get("/caresync/pharmacy-orders", (_req, res) => {
 // ============================================================================
 // BACKWARD COMPATIBLE AI SUMMARY
 // ============================================================================
-router.get("/caresync/ai-summary", (_req, res) => {
-  const nextAppt = store.appointments.find((a) => a.patientId === 1 && a.status === "CONFIRMED");
+router.get("/caresync/ai-summary", (req, res) => {
+  const patientId = req.user?.patientId || 1;
+  const nextAppt = store.appointments.find((a) => a.patientId === patientId && a.status === "CONFIRMED");
   const doctor = nextAppt ? store.doctors.find((d) => d.id === nextAppt.doctorId) : null;
+  const recentReport = store.labReports.find((r) => r.patientId === patientId);
 
   res.json(
     GetCareSyncAiSummaryResponse.parse({
       headline: "Your care is moving forward",
-      body: `Your recent blood work from ABC Diagnostics has been received and linked to your continuous care journey. You have an upcoming ${nextAppt?.mode || "consultation"} with ${doctor?.fullName || "Dr. Rahul Mehta"}.`,
+      body: `Your recent blood work from ${recentReport?.testName || "ABC Diagnostics"} has been received and linked to your continuous care journey. You have an upcoming ${nextAppt?.mode || "consultation"} with ${doctor?.fullName || "Dr. Rahul Mehta"}.`,
       nextStep: "Review your HbA1c and lipid report before your follow-up consultation.",
       disclaimer:
         "CareSync AI provides software-assisted information management and does not replace professional medical diagnosis or treatment.",

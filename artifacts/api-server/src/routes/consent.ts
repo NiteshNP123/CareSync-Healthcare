@@ -64,7 +64,7 @@ router.get("/patients/lookup/:careSyncId", requireAuth, (req, res) => {
   res.json({
     patientId: patient.id,
     careSyncId: patient.careSyncId,
-    initials: user?.fullName ? user.fullName.split(" ").map((w) => w[0]).join("").slice(0, 2) : "RS",
+    initials: user?.fullName ? user.fullName.split(" ").map((w: string) => w[0]).join("").slice(0, 2) : "RS",
     gender: patient.gender,
     idStatus: patient.idStatus,
     hasActiveConsent: hasAccess,

@@ -44,7 +44,7 @@ router.get("/patients/:id/dashboard", requireAuth, (req, res) => {
       id: patient.id,
       name: user?.fullName || "Rahul Sharma",
       patientId: patient.careSyncId,
-      initials: user?.fullName ? user.fullName.split(" ").map((w) => w[0]).join("").slice(0, 2) : "RS",
+      initials: user?.fullName ? user.fullName.split(" ").map((w: string) => w[0]).join("").slice(0, 2) : "RS",
       idStatus: patient.idStatus,
       bloodGroup: patient.bloodGroup,
       allergies: patient.allergies,

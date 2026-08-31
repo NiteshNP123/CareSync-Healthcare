@@ -22,7 +22,7 @@ router.get("/doctors", (_req, res) => {
       verified: doctor.verificationStatus === "VERIFIED",
       verificationStatus: doctor.verificationStatus,
       nextSlot: doctor.nextSlot || "Available Tomorrow",
-      initials: doctor.initials || doctor.fullName.split(" ").map((w) => w[0]).join("").slice(0, 2),
+      initials: doctor.initials || doctor.fullName.split(" ").map((w: string) => w[0]).join("").slice(0, 2),
       bio: doctor.bio,
     };
   });

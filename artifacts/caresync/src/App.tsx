@@ -1,4 +1,4 @@
-import { type ReactNode, useMemo, useState } from 'react';
+import { type ReactNode, useMemo, useState, useEffect } from 'react';
 import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/react-query';
 import {
   Activity,
@@ -100,6 +100,7 @@ import { JourneyDetailModal } from '@/components/journey-modal';
 import { ShareTransferModal } from '@/components/share-transfer-modal';
 import { ExplainReportModal } from '@/components/explain-report-modal';
 import { SandboxPaymentModal } from '@/components/sandbox-payment-modal';
+import { CareSyncAssistant } from '@/components/assistant/caresync-assistant';
 
 const queryClient = new QueryClient();
 
@@ -568,6 +569,7 @@ function AppShell({
           </PageTransition>
         </main>
       </div>
+      <CareSyncAssistant isVisible={activeRole === 'PATIENT'} />
     </div>
   );
 }
@@ -1660,6 +1662,16 @@ function ProfilePage({ role, onRoleChange }: { role: UserRole; onRoleChange: (r:
 
 function AppRouter() {
   const [currentRole, setCurrentRole] = useState<UserRole>('PATIENT');
+
+  useEffect(() => {
+    // Establish authenticated server session cookie for the active demo role
+    fetch('/api/auth/demo-switch', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ role: currentRole }),
+    }).catch(() => {});
+  }, [currentRole]);
 
   return (
     <Switch>
